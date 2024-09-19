@@ -61,9 +61,11 @@ const QuoteForm = () => {
   };
   return (
     <>
-      <section className="flex items-center justify-center text-white bg-center bg-cover bg-[url('/imgs/contactus.png')] py-56">
+      <section className="flex items-center justify-center text-white bg-center bg-cover bg-[url('/imgs/contactus.png')] md:py-56 pt-32 pb-20">
         <div className=" mx-auto flex justify-center items-center h-full">
-          <h1 className="text-white text-5xl font-bold">Offertförfrågan</h1>
+          <h1 className="text-white text-3xl md:text-5xl font-bold">
+            Offertförfrågan
+          </h1>
         </div>
       </section>
 
@@ -71,7 +73,7 @@ const QuoteForm = () => {
         <MapComponent />
       </section> */}
 
-      <section className="py-12 px-6 md:px-9 text-black w-full flex flex-col lg:flex-row gap-12 items-start justify-center">
+      <section className="py-12 px-4 md:px-9 text-black w-full flex flex-col lg:flex-row gap-12 items-start justify-center">
         <div className="w-full lg:w-4/12 px-8">
           <h2 className="text-xl font-bold mb-1">Kontakt</h2>
           <h3 className="text-lg font-semibold mb-4">Pallhotellet</h3>
@@ -86,10 +88,8 @@ const QuoteForm = () => {
             </div>
             <div className="flex items-center">
               <AiOutlineMail size={20} />
-              <p className="ml-4">
-                  order@pallhotellet.se
-              </p>
-            </div>
+              <p className="ml-4">order@pallhotellet.se</p>
+            </div> 
           </div>
         </div>
         <div className="w-full lg:w-10/12 px-8 ">
@@ -98,7 +98,10 @@ const QuoteForm = () => {
             {/* Contact Form */}
             {/* 1. Företagsuppgifter */}
             <div>
-              <h2 className="text-2xl font-bold mb-6"> 1. Företagsuppgifter </h2>
+              <h2 className="text-2xl font-bold mb-6">
+                {" "}
+                1. Företagsuppgifter{" "}
+              </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <input
                   type="text"
@@ -146,14 +149,18 @@ const QuoteForm = () => {
               {/* Kallager */}
               <p className="mb-4 font-semibold">2.1 Kallager</p>
               <div className="my-10">
-                <label className="flex items-center mb-3">
-                  <input
-                    type="checkbox"
-                    className="mr-2 size-6"
-                    checked={checkedSections.kallager}
-                    onChange={() => handleCheckboxChange("kallager")}
-                  />
-                  <p>Vill hyra pallplatser INOMHUS I KALLAGER</p>
+                <label className="flex md:items-center mb-3">
+                  <div className="w-2/12 md:w-auto md:me-3">
+                    <input
+                      type="checkbox"
+                      className="mr-2 size-6"
+                      checked={checkedSections.kallager}
+                      onChange={() => handleCheckboxChange("kallager")}
+                    />
+                  </div>
+                  <div className="w-10/12">
+                    Vill hyra pallplatser INOMHUS I KALLAGER
+                  </div>
                 </label>
 
                 {checkedSections.kallager && (
@@ -218,14 +225,18 @@ const QuoteForm = () => {
               {/* Varmlager */}
               <div className="my-10">
                 <p className="my-5 font-semibold">2.2 Varmlager</p>
-                <label className="flex items-center my-10">
-                  <input
-                    type="checkbox"
-                    checked={checkedSections.varmlager}
-                    onChange={() => handleCheckboxChange("varmlager")}
-                    className="mr-2 size-6"
-                  />
+                <label className="flex md:items-center my-10">
+                  <div className="w-2/12 md:w-auto md:me-3">
+                    <input
+                      type="checkbox"
+                      checked={checkedSections.varmlager}
+                      onChange={() => handleCheckboxChange("varmlager")}
+                      className="mr-2 size-6"
+                    />
+                  </div>
+                <div className="w-10/12">
                   Vill hyra pallplatser INOMHUS I UPPVÄRMT LAGER
+                </div>
                 </label>
 
                 {checkedSections.varmlager && (
@@ -288,17 +299,21 @@ const QuoteForm = () => {
 
               {/* Utomhusförvaring */}
               <h2 className="my-5 font-semibold">2.3 Utomhusförvaring</h2>
-              <div className="flex items-center my-10">
-                <input
-                  type="checkbox"
-                  id="utomhusforvaring"
-                  checked={checkedSections.utomhusforvaring}
-                  onChange={() => handleCheckboxChange("utomhusforvaring")}
-                  className="mr-2 size-6"
-                />
-                <label htmlFor="utomhusforvaring">
-                  Vill hyra av inhägnat LAGERYTA UTOMHUS
-                </label>
+              <div className="flex md:items-center my-10">
+                <div className="w-2/12 md:w-auto md:me-3">
+                  <input
+                    type="checkbox"
+                    id="utomhusforvaring"
+                    checked={checkedSections.utomhusforvaring}
+                    onChange={() => handleCheckboxChange("utomhusforvaring")}
+                    className="mr-2 size-6"
+                  />
+                </div>
+                <div className="w-10/12">
+                  <label htmlFor="utomhusforvaring">
+                    Vill hyra av inhägnat LAGERYTA UTOMHUS
+                  </label>
+                </div>
               </div>
 
               {checkedSections.utomhusforvaring && (
@@ -372,15 +387,19 @@ const QuoteForm = () => {
 
               {/* Hyra av förråd */}
               <h2 className="my-5 font-semibold">2.4 Hyra av förråd</h2>
-              <div className="flex items-center my-10">
-                <input
-                  type="checkbox"
-                  checked={checkedSections.forrad}
-                  onChange={() => handleCheckboxChange("forrad")}
-                  id="forrad"
-                  className="mr-2 size-6"
-                />
-                <label htmlFor="forrad">Vill hyra INOMHUSFÖRRÅD</label>
+              <div className="flex md:items-center my-10">
+                <div className="w-2/12 md:w-auto md:me-3">
+                  <input
+                    type="checkbox"
+                    checked={checkedSections.forrad}
+                    onChange={() => handleCheckboxChange("forrad")}
+                    id="forrad"
+                    className="size-6"
+                  />
+                </div>
+                <div className="w-10/12">
+                  <label htmlFor="forrad">Vill hyra INOMHUSFÖRRÅD</label>
+                </div>
               </div>
 
               {checkedSections.forrad && (
@@ -390,7 +409,7 @@ const QuoteForm = () => {
                     placeholder="Ytan i m2"
                     className="p-2 border rounded focus:outline-orange-500"
                   />
-                  
+
                   <div
                     className="relative w-full"
                     onClick={handleStartDateClick}
@@ -431,92 +450,58 @@ const QuoteForm = () => {
             <h2 className="text-2xl font-semibold">
               3. Inlastning / utlastning
             </h2>
-            {/* <p className="mb-4 font-semibold">
-              3.1 Hur ofta skall godset lastas in och ut?
-            </p>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-              <select className="p-2 h-12 border rounded focus:outline-orange-500">
-                <option>Antal inlastningar i månaden</option>
-              </select>
-              <select className="p-2 h-12 border rounded focus:outline-orange-500">
-                <option>Antal utlastningar i månaden</option>
-              </select>
-            </div> */}
-
-            {/* <div className="border-t-2 border-dotted border-[#A0ABBB] my-6"></div> */}
 
             {/* Lossning, ompackning */}
             <h3 className="font-semibold">3.1 Lossning, ompackning</h3>
             <div className="space-y-10">
-              <div className="w-full flex flex-wrap ">
-                <div className="md:w-1/2 flex items-center">
+              <div className="flex md:items-center">
+                <div className="w-2/12 md:w-auto md:me-3">
                   <input
                     type="checkbox"
-                    checked={checkedSections.gaffeltruck}
+                    // checked={checkedSections.gaffeltruck}
                     onChange={() => handleCheckboxChange("gaffeltruck")}
                     id="gaffeltruck"
-                    className="mr-2 size-6"
+                    className="size-6"
                   />
+                </div>
+                <div className="w-10/12">
                   <label htmlFor="gaffeltruck">
                     Lossning/lastning lastbil med gaffeltruck önskas
                   </label>
                 </div>
-                <div className="md:w-1/2 flex items-center">
-                  {checkedSections.gaffeltruck && (
-                    <input
-                      type="text"
-                      placeholder="Antal timmar"
-                      className="p-2 border focus:outline-orange-500 rounded mt-5 md:mt-0"
-                    />
-                  )}
-                </div>
               </div>
 
-              <div className="w-full flex flex-wrap ">
-                <div className="md:w-1/2 flex items-center">
+              <div className="flex md:items-center">
+                <div className="w-2/12 md:w-auto md:me-3">
                   <input
                     type="checkbox"
-                    checked={checkedSections.container}
+                    // checked={checkedSections.container}
                     onChange={() => handleCheckboxChange("container")}
                     id="container"
                     className="mr-2 size-6"
                   />
+                </div>
+                <div className="w-10/12">
                   <label htmlFor="container">
                     Lossning/lastning av container önskas
                   </label>
                 </div>
-                <div className="md:w-1/2 flex items-center">
-                  {checkedSections.container && (
-                    <input
-                      type="text"
-                      placeholder="Antal timmar"
-                      className="p-2 border focus:outline-orange-500 rounded mt-5 md:mt-0"
-                    />
-                  )}
-                </div>
               </div>
 
-              <div className="w-full flex flex-wrap ">
-                <div className="md:w-1/2 flex items-center">
+              <div className="flex md:items-center">
+                <div className="w-2/12 md:w-auto md:me-3">
                   <input
                     type="checkbox"
-                    checked={checkedSections.ompackning}
+                    // checked={checkedSections.ompackning}
                     onChange={() => handleCheckboxChange("ompackning")}
                     id="ompackning"
                     className="mr-2 size-6"
                   />
+                </div>
+                <div className="w-10/12">
                   <label htmlFor="ompackning">
                     Ompackning och plock önskas
                   </label>
-                </div>
-                <div className="md:w-1/2 flex items-center">
-                  {checkedSections.ompackning && (
-                    <input
-                      type="text"
-                      placeholder="Antal timmar"
-                      className="p-2 border focus:outline-orange-500 rounded mt-5 md:mt-0"
-                    />
-                  )}
                 </div>
               </div>
             </div>
@@ -525,29 +510,38 @@ const QuoteForm = () => {
 
             {/* Additional Checkboxes */}
 
-            <div className="flex items-center">
-              <input
-                type="checkbox"
-                id="containerhandling"
-                checked={checkedSections.containerhandling}
-                onChange={() => handleCheckboxChange("containerhandling")}
-                className="mr-2 size-6"
-              />
-              <label htmlFor="containerhandling">
-                Containerhantering/packetering
-              </label>
+            <div className="flex md:items-center">
+              <div className="w-2/12 md:w-auto md:me-3">
+                <input
+                  type="checkbox"
+                  id="containerhandling"
+                  checked={checkedSections.containerhandling}
+                  onChange={() => handleCheckboxChange("containerhandling")}
+                  className="mr-2 size-6"
+                />
+              </div>
+              <div className="w-10/12">
+                <label htmlFor="containerhandling">
+                  Containerhantering /packetering
+                </label>
+              </div>
             </div>
+
             <div className="border-t-2 border-dotted border-[#A0ABBB] my-6"></div>
 
-            <div className="flex items-center">
-              <input
-                type="checkbox"
-                id="skrymmande"
-                checked={checkedSections.skrymmande}
-                onChange={() => handleCheckboxChange("skrymmande")}
-                className="mr-2 size-6"
-              />
-              <label htmlFor="skrymmande">Hantering av skrymmande gods</label>
+            <div className="flex md:items-center">
+              <div className="w-2/12 md:w-auto md:me-3">
+                <input
+                  type="checkbox"
+                  id="skrymmande"
+                  // checked={checkedSections.skrymmande}
+                  onChange={() => handleCheckboxChange("skrymmande")}
+                  className="mr-2 size-6"
+                />
+              </div>
+              <div className="w-10/12">
+                <label htmlFor="skrymmande">Hantering av skrymmande gods</label>
+              </div>
             </div>
 
             <div className="border-t-2 border-dotted border-[#A0ABBB] my-6"></div>
@@ -559,69 +553,57 @@ const QuoteForm = () => {
 
             <div className="mb-6 space-y-10">
               <div className="w-full flex flex-wrap">
-                <div className="md:w-1/2 flex items-center">
+                <div className="w-2/12 md:w-auto md:me-3">
                   <input
                     type="checkbox"
-                    checked={checkedSections.handtruck}
+                    // checked={checkedSections.handtruck}
                     onChange={() => handleCheckboxChange("handtruck")}
                     id="handtruck"
                     className="mr-2 size-6"
                   />
+                </div>
+                <div className="w-10/12">
                   <label htmlFor="handtruck">Handtruck önskas</label>
                 </div>
+
                 <div className="md:w-1/2 flex items-center">
-                  {checkedSections.handtruck && (
+                  {/* {checkedSections.handtruck && (
                     <input
                       type="text"
                       placeholder="Antal timmar"
                       className="p-2 border focus:outline-orange-500 rounded mt-5 md:mt-0"
                     />
-                  )}
+                  )} */}
                 </div>
               </div>
 
-              <div className="w-full flex flex-wrap">
-                <div className="md:w-1/2 flex items-center">
+              <div className="flex md:items-center">
+                <div className="w-2/12 md:w-auto md:me-3">
                   <input
                     type="checkbox"
-                    checked={checkedSections.gaffeltruck2}
+                    // checked={checkedSections.gaffeltruck2}
                     onChange={() => handleCheckboxChange("gaffeltruck2")}
                     id="gaffeltruck2"
                     className="mr-2 size-6"
                   />
-                  <label htmlFor="gaffeltruck2">Gaffeltruck önskas</label>
                 </div>
-                <div className="md:w-1/2 flex items-center">
-                  {checkedSections.gaffeltruck2 && (
-                    <input
-                      type="text"
-                      placeholder="Antal timmar"
-                      className="p-2 border focus:outline-orange-500 rounded mt-5 md:mt-0"
-                    />
-                  )}
+                <div className="w-10/12">
+                  <label htmlFor="gaffeltruck2">Gaffeltruck önskas</label>
                 </div>
               </div>
 
-              <div className="w-full flex flex-wrap">
-                <div className="md:w-1/2 flex items-center">
+              <div className="flex md:items-center">
+                <div className="w-2/12 md:w-auto md:me-3">
                   <input
                     type="checkbox"
-                    checked={checkedSections.travers}
+                    // checked={checkedSections.travers}
                     onChange={() => handleCheckboxChange("travers")}
                     id="travers"
                     className="mr-2 size-6"
                   />
-                  <label htmlFor="travers">Travers önskas (max 7ton)</label>
                 </div>
-
-                <div className="md:w-1/2 flex items-center">
-                  {checkedSections.travers && (
-                    <input
-                      type="text"
-                      placeholder="Antal timmar"
-                      className="p-2 border focus:outline-orange-500 rounded mt-5 md:mt-0"
-                    />
-                  )}
+                <div>
+                  <label htmlFor="travers">Travers önskas (max 7ton)</label>
                 </div>
               </div>
             </div>
@@ -640,7 +622,7 @@ const QuoteForm = () => {
                   <label className="flex items-center md:w-1/2">
                     <input
                       type="checkbox"
-                      className="form-checkbox size-6 me-2"
+                      className="size-6 me-2"
                       checked={checkedSections.helpDocumentation}
                       onChange={() => handleCheckboxChange("helpDocumentation")}
                     />
@@ -658,39 +640,47 @@ const QuoteForm = () => {
                 <div className="border-t-2 border-dotted border-[#A0ABBB] my-6"></div>
 
                 {/* Order Management */}
-                <div className="my-10 flex flex-wrap space-y-5">
-                  <label className="flex items-center md:w-1/2">
-                    <input
-                      type="checkbox"
-                      className="form-checkbox size-6 me-2"
-                      checked={checkedSections.orderManagement}
-                      onChange={() => handleCheckboxChange("orderManagement")}
-                    />
-                    <span>Hjälp med dokumentation önskas</span>
+                <div className="my-10 space-y-5">
+                  <label className="flex">
+                    <div className="w-2/12 md:w-auto md:me-3">
+                      <input
+                        type="checkbox"
+                        className="size-6 me-2"
+                        // checked={checkedSections.orderManagement}
+                        onChange={() => handleCheckboxChange("orderManagement")}
+                      />
+                    </div>
+                    <div className="w-10/12">
+                      Hjälp med dokumentation önskas
+                    </div>
                   </label>
-                  {checkedSections.orderManagement && (
+                  {/* {checkedSections.orderManagement && (
                     <input
                       type="text"
                       placeholder="Antal timmar"
                       className="mt-2 p-2 border rounded focus:border-orange-500 md:w-1/2"
                     />
-                  )}
+                  )} */}
                 </div>
 
                 <div className="border-t-2 border-dotted border-[#A0ABBB] my-6"></div>
 
                 {/* Upphandling */}
                 <div className="my-10">
-                  <label className="md:flex items-center space-x-2">
-                    <input
-                      type="checkbox"
-                      checked={checkedSections.upphandling}
-                      onChange={() => handleCheckboxChange("upphandling")}
-                      className="form-checkbox size-6"
-                    />
-                    <span>Hjälp med orderhantering önskas</span>
+                  <label className="flex md:items-center">
+                    <div className="w-2/12 md:w-auto md:me-3">
+                      <input
+                        type="checkbox"
+                        // checked={checkedSections.upphandling}
+                        onChange={() => handleCheckboxChange("upphandling")}
+                        className="size-6"
+                      />
+                    </div>
+                    <div className="w-10/12">
+                      Hjälp med orderhantering önskas
+                    </div>
                   </label>
-                  {checkedSections.upphandling && (
+                  {/* {checkedSections.upphandling && (
                     <div className="flex flex-wrap my-7 gap-5">
                       <input
                         type="text"
@@ -703,23 +693,26 @@ const QuoteForm = () => {
                         className="p-2 border border-gray-300 rounded md:w-1/2 focus:ring-orange-500 focus:border-orange-500"
                       />
                     </div>
-                  )}
+                  )} */}
                 </div>
 
                 <div className="border-t-2 border-dotted border-[#A0ABBB] my-6"></div>
 
                 {/* Kringfunktioner */}
-                <div className="my-10 md:flex justify-between">
-                  <label className="flex items-center space-x-4">
-                    <input
-                      type="checkbox"
-                      className="form-checkbox size-6"
-                      checked={checkedSections.kringfunktioner}
-                      onChange={() => handleCheckboxChange("kringfunktioner")}
-                    />
-                    <span>
-                    Behöver hjälp med andra kringtjänster, såsom montering, underhåll etc. Vi önskar mer info.
-                    </span>
+                <div className="my-10">
+                  <label className="flex md:items-center">
+                    <div className="w-2/12 md:w-auto md:me-3">
+                      <input
+                        type="checkbox"
+                        className="me-2 size-6"
+                        checked={checkedSections.kringfunktioner}
+                        onChange={() => handleCheckboxChange("kringfunktioner")}
+                      />
+                    </div>
+                    <div className="w-10/12">
+                      Behöver hjälp med andra kringtjänster, såsom montering,
+                      underhåll etc. Vi önskar mer info.
+                    </div>
                   </label>
                 </div>
 
@@ -727,16 +720,21 @@ const QuoteForm = () => {
 
                 {/* Complete Solution */}
                 <div className="my-10">
-                  <label className="flex items-center space-x-2">
-                    <input
-                      type="checkbox"
-                      className="form-checkbox size-6"
-                      checked={checkedSections.completeSolution}
-                      onChange={() => handleCheckboxChange("completeSolution")}
-                    />
-                    <span>
-                    Behöver förslag till en komplett 3pl lösning, önskar gärna mer info.
-                    </span>
+                  <label className="flex md:items-center">
+                    <div className="w-2/12 md:w-auto md:me-3">
+                      <input
+                        type="checkbox"
+                        className="me-2 size-6"
+                        checked={checkedSections.completeSolution}
+                        onChange={() =>
+                          handleCheckboxChange("completeSolution")
+                        }
+                      />
+                    </div>
+                    <div className="w-10/12">
+                      Behöver förslag till en komplett 3pl lösning, önskar
+                      gärna mer info.
+                    </div>
                   </label>
                 </div>
 

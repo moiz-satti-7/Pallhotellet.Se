@@ -15,57 +15,70 @@ export default function HomePage() {
 
   // Reusable SliderContent Component
   const SliderContent = () => (
-    <div className="py-auto flex flex-col items-center space-y-10 text-white md:mt-10 px-5">
+    <div className="py-auto flex flex-col items-center space-y-10 text-white md:mt-10 px-3">
       <div>
         <h1 className="text-center md:text-5xl lg:text-7xl text-3xl px-10 font-bold mx-auto">
           Från 49 kronor per pall!
         </h1>
       </div>
-      <div>
-        <p className="xl:text-xl px-5">Hyr din pallplats hos oss!</p>
+      <div className="px-20">
+        <p className="xl:text-xl text-center">
+          Hyr din pallplats hos oss!
+        </p>
       </div>
-      <button className="bg-[#ff6300] flex items-center hover:border-white text-white border-2 border-[#ff6300] text-nowrap py-2 md:py-3 font-bold px-3 md:px-5 lg:px-10 text-center rounded-md text-sm">
+      <button
+        className="bg-[#ff6300] hover:bg-white flex items-center hover:border-[#ff6300]
+       text-white hover:text-[#ff6300] border-4 border-[#ff6300] text-nowrap py-1 md:py-3 font-bold px-3 md:px-5 lg:px-10 text-center rounded-md text-sm"
+      >
         UPPTÄCK MER{" "}
-        <span className="bg-white rounded-full p-1 ms-3">
-          <IoArrowForward color="black" size={20} />
+        <span className="bg-white rounded-full md:p-2 p-1 ms-3 hover:bg-transparent border-2 border-[#ff6300]">
+          <IoArrowForward color="orange" size={20} />
         </span>
       </button>
     </div>
   );
   const SliderContent2 = () => (
-    <div className="py-auto flex flex-col items-center space-y-10 text-white md:mt-10 px-5">
+    <div className="py-auto flex flex-col items-center space-y-10 text-white md:mt-10 px-3">
       <div>
         <h1 className="text-center md:text-5xl lg:text-7xl text-3xl px-10 font-bold mx-auto">
           Godshantering
         </h1>
       </div>
-      <div>
-        <p className="xl:text-xl px-5">
+      <div className="px-10">
+        <p className="xl:text-xl text-center">
           Vi tar hand om ut-och inlastning av ditt gods
         </p>
       </div>
-      <button className="bg-[#ff6300] flex items-center hover:border-white text-white border-2 border-[#ff6300] text-nowrap py-2 md:py-3 font-bold px-3 md:px-5 lg:px-10 text-center rounded-md text-sm">
-        Upptäck mer.
-        <span className="bg-white rounded-full p-1 ms-3">
-          <IoArrowForward color="black" size={20} />
+      <button
+        className="bg-[#ff6300] hover:bg-white flex items-center hover:border-[#ff6300]
+       text-white hover:text-[#ff6300] border-4 border-[#ff6300] text-nowrap py-1 md:py-3 font-bold px-3 md:px-5 lg:px-10 text-center rounded-md text-sm"
+      >
+        UPPTÄCK MER
+        <span className="bg-white rounded-full md:p-2 p-1 ms-3 hover:bg-transparent border-2 border-[#ff6300]">
+          <IoArrowForward color="orange" size={20} />
         </span>
       </button>
     </div>
   );
   const SliderContent3 = () => (
-    <div className="py-auto flex flex-col items-center space-y-10 text-white md:mt-10 px-5">
+    <div className="py-auto flex flex-col items-center space-y-10 text-white md:mt-10 px-3">
       <div>
         <h1 className="text-center md:text-5xl lg:text-7xl text-3xl px-10 font-bold mx-auto">
           Vi ordnar hela flödet
         </h1>
       </div>
-      <div>
-        <p className="xl:text-xl px-5">Vi tar hand om hela flödet åt er</p>
+      <div className="px-20">
+        <p className="xl:text-xl text-center">
+          Vi tar hand om hela flödet åt er
+        </p>
       </div>
-      <button className="bg-[#ff6300] flex items-center hover:border-white text-white border-2 border-[#ff6300] text-nowrap py-2 md:py-3 font-bold px-3 md:px-5 lg:px-10 text-center rounded-md text-sm">
-        Upptäck mer.
-        <span className="bg-white rounded-full p-1 ms-3">
-          <IoArrowForward color="black" size={20} />
+      <button
+        className="bg-[#ff6300] hover:bg-white flex items-center hover:border-[#ff6300]
+       text-white hover:text-[#ff6300] border-4 border-[#ff6300] text-nowrap py-1 md:py-3 font-bold px-3 md:px-5 lg:px-10 text-center rounded-md text-sm"
+      >
+        UPPTÄCK MER
+        <span className="bg-white rounded-full md:p-2 p-1 ms-3 hover:bg-transparent border-2 border-[#ff6300]">
+          <IoArrowForward color="orange" size={20} />
         </span>
       </button>
     </div>
@@ -272,15 +285,15 @@ export default function HomePage() {
 
       {/* <!-- Section3 --> */}
 
-      <section className="flex md:flex-row flex-col md:px-20 px-10 my-10">
+      <section className="flex md:flex-row flex-col md:px-20 px-10 md:my-20 my-10">
         {/* <!--col-1 Text --> */}
         <div className="md:pe-8 inline-flex justify-center flex-col space-y-6 md:w-6/12 w-full text-center md:text-start">
           <div>
             <p className="bg-[#FF6F0F17] text-[#ff6300] inline-block p-4 text-lg">
-              VILKA VI ÄR
+              Vilka är vi
             </p>
           </div>
-          <p className="md:text-4xl text-lg font-bold md:w-5/6 leading-loose">
+          <p className="md:text-4xl text-lg font-bold leading-loose">
             Vi hjälper dig med lagerhållning, godshantering, dokumentation och
             mycket mer.
           </p>
@@ -291,25 +304,25 @@ export default function HomePage() {
           </p>
           <p className="bg-[#7d7d7d21] text-gray-500 p-[2rem] pl-5 place-content-around ">
             Aliqu diam amet diam et eos. Clita erat ipsum et lorem sed stet
-            lorem sit clita duo justo erat amet <br />
+            lorem sit clita duo justo erat amett <br />
             <span className="text-orange-600 mt-5">Christopher Jarl, CEO</span>
           </p>
           <div className="flex text-wrap justify-center md:justify-start space-y-5 sm:space-y-0">
             <Link href="/contact">
               <button
-                className="flex items-center md:justify-around text-[#ff6300] border-2 border-[#ff6300] text-nowrap md:py-3 py-2  px-3 md:px-4 lg:px-8  
+                className="flex items-center md:justify-around text-[#ff6300] hover:text-white hover:bg-[#ff6300] border-[#ff6300] border-2 text-nowrap md:py-3 py-2  px-3 md:px-4 lg:px-8  
            text-center rounded-md"
               >
                 Kontakta oss
-                <span className="bg-[#ff6300] rounded-full p-1 ms-3">
-                  <IoArrowForward color="white" size={23} />
+                <span className="bg-white rounded-full border-[#ff6300] border-2 p-1 ms-3">
+                  <IoArrowForward color="orange" size={23} />
                 </span>
               </button>
             </Link>
           </div>
         </div>
         {/* <!--col-2 side Image --> */}
-        <div className="my-10 md:my-0 md:p-10 px-5 md:w-6/12 w-full">
+        <div className="my-10 md:my-0 md:flex justify-end md:px-5 md:w-6/12 w-full">
           <div className="relative">
             <Image
               src="/imgs/Rectangle4.png"
@@ -336,10 +349,11 @@ export default function HomePage() {
       <section className="bg-[#7d7d7d21] p-10 md:px-20">
         <div className="text-center space-y-4">
           <p className="bg-[#FF6F0F17] text-[#ff6300] p-3 inline-block">
-            VAD VI ERBJUDER
+          Vad erbjuder vi
           </p>
           <p className="md:text-[2rem] text-[1.2rem] font-bold md:w-5/12 mx-auto">
-            Vi erbjuder flexibla och skräddarsydda lösningar
+          Vi erbjuder flexibla och 
+          skräddarsydda lösningar
           </p>
         </div>
 
@@ -352,7 +366,7 @@ export default function HomePage() {
                 </p>
               </div>
               <p className="px-2 mt-8 text-[1.3rem] font-bold">
-                Strumpa för allas behov
+              Lager till allas behov
               </p>
               <p className="text-[#989898] py-4 w-11/12 md:w-8/12 mx-auto text-[1rem]">
                 Tempor erat elitr rebum at clita dolor diam ipsum sit diam amet
@@ -389,7 +403,7 @@ export default function HomePage() {
                 </p>
               </div>
               <p className="px-2 mt-8 text-[1.3rem] font-bold">
-                Vi tar hand om dina varor
+              Vi tar hand om dina varor
               </p>
               <p className="text-[#989898] py-4 w-11/12 md:w-8/12 mx-auto text-[1rem]">
                 Tempor erat elitr rebum at clita dolor diam ipsum sit diam amet
@@ -424,7 +438,7 @@ export default function HomePage() {
                 </p>
               </div>
               <p className="px-2 mt-8 text-[1.3rem] font-bold">
-                Vi tar hand om ditt lager
+              Vi ordnar det mesta
               </p>
               <p className="text-[#989898] py-4 w-11/12 md:w-8/12 mx-auto text-[1rem]">
                 Tempor erat elitr rebum at clita dolor diam ipsum sit diam amet
@@ -455,7 +469,7 @@ export default function HomePage() {
 
       {/* Services section / 3-Images  */}
 
-      <section className="my-10 bg-[url('/imgs/Frame5894.png')] p-10 md:p-24">
+      <section className="my-10 bg-[url('/imgs/Frame5894.png')] p-10 md:p-20">
         <div className="flex flex-col justify-center lg:flex-row">
           <div className="lg:w-3/12 w-full lg:pt-44">
             <div className="relative my-10 lg:my-0 lg:flex justify-center  hidden">
@@ -481,28 +495,15 @@ export default function HomePage() {
           <div className="lg:w-6/12 w-full text-white lg:px-10">
             <div className="text-center space-y-10 mb-10 md:mb-40">
               <p className="md:px-7 px-5 text-3xl font-bold">
-                Skalbara och flexibla lagerplatser från 49 kr per pall och månad
+              Flexibla lagerplatser från 49 kr 
+              per pall och månad
               </p>
               <p className="text-lg">
-                Att välja Pallhotellet för dina lagerbehov innebär att du inte
-                bara får tillgång till flexibla och kostnadseffektiva
-                lagerlösningar. Det innebär också att du får en partner som är
-                engagerad i att lösa ditt företags unika utmaningar och hjälpa
-                dig att optimera ditt lagerflöde. När du väljer oss för dina
-                lagerbehov kommer du att uppleva fördelarna med optimerad
-                lagerhantering. Genom att endast betala för det utrymme du
-                faktiskt använder kan du optimera ditt lager och eliminera
-                onödiga kostnader. Detta kan vara särskilt fördelaktigt för
-                företag med varierande lagerbehov eller för de som bedriver
-                säsongsbaserad verksamhet.
+              Att välja Pallhotellet för dina lagerbehov innebär att du inte bara får  tillgång till flexibla och kostnadseffektiva lagerlösningar. Det innebär  också att du får en partner som är engagerad i att lösa ditt företags  unika utmaningar och hjälpa dig att optimera  ditt lagerflöde.
+              När du väljer oss för dina lagerbehov kommer du att uppleva fördelarna  med optimerad lagerhantering. Genom att endast betala för det utrymme du  faktiskt använder kan du optimera ditt lager och eliminera onödiga  kostnader. Detta kan vara särskilt fördelaktigt  för företag med varierande lagerbehov eller för de som bedriver  säsongsbaserad verksamhet.
               </p>
               <p className="text-lg">
-                Vårt engagemang att hantera dina in- och utleveranser innebär
-                att du kan lägga större fokus på ditt företags kärnverksamhet,
-                vilket främjar effektivitet inom ditt företag. Dessutom är vårt
-                erbjudande utformat för att vara så flexibelt som möjligt,
-                vilket ger dig friheten att anpassa ditt lagerutrymme efter dina
-                behov, när du behöver det.
+              Vårt engagemang att hantera dina in- och utleveranser innebär att du kan  lägga större fokus på ditt företags kärnverksamhet, vilket främjar  effektivitet inom ditt företag. Dessutom är vårt erbjudande utformat för  att vara så flexibelt som möjligt, vilket ger  dig friheten att anpassa ditt lagerutrymme efter dina behov, när du  behöver det.
               </p>
             </div>
             <div className="lg:relative my-10 hidden lg:block">
@@ -558,7 +559,7 @@ export default function HomePage() {
             Vår personal
           </p>
           <p className="md:text-4xl text-3xl font-bold md:w-2/12 w-5/12 mx-auto">
-            Vår personal är vår styrka
+          Kontakta oss redan idag!
           </p>
         </div>
 
