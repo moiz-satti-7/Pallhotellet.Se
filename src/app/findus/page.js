@@ -101,7 +101,7 @@ export default function Findus() {
         </div>
       </section>
 
-      <section className="h-[500px]">
+      <section className="h-[500px] relative z-20">
         <MapComponent />
       </section>
     </>
