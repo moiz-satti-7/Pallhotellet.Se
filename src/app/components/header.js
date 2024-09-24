@@ -95,14 +95,14 @@ export default function Header() {
       <div className="flex md:justify-center justify-around">
         <div
           id="stickyDiv"
-          className={`text-white flex justify-between items-center
+          className={`text-white flex justify-between md:justify-normal items-center
              w-full py-4 bg-[#001d24] px-8 md:mx-20 ${
                isSticky
                  ? "bg-[#001d24] fixed top-0 z-50 px-8 md:px-20"
                  : "md:relative absolute "
              }`}
         >
-          <div className="md:w-4/12 lg:h-auto">
+          <div className="md:w-3/12 xl:w-4/12 lg:h-auto">
             <Link className="w-full" href="/">
               <Image
                 src="/imgs/Pallhotellet.se.png"
@@ -120,11 +120,11 @@ export default function Header() {
             </button>
           </div>
 
-          <div className="md:w-8/12 hidden md:flex items-center justify-between space-x-2">
+          <div className="md:w-9/12 xl:w-8/12 hidden md:flex items-center justify-between space-x-2">
             {/* Desktop menu */}
             <ul
               id="menu"
-              className="hidden md:flex text-nowrap lg:space-x-14 md:space-x-2 lg:text-lg font-semibold "
+              className="hidden md:flex text-nowrap lg:space-x-8 md:space-x-2 lg:text-lg font-semibold "
             >
               <li
                 className={`${
