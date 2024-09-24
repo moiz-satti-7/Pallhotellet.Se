@@ -81,11 +81,11 @@ export default function Footer() {
             <li className="hover:text-white my-3 text-sm">
               <Link href="/">Hem</Link>
             </li>
-            {/* <li className="hover:text-white my-3 text-sm">
+            <li className="hover:text-white my-3 text-sm">
               <Link href="/services">
                 Hitta oss
               </Link>
-            </li> */}
+            </li>
             <li className="hover:text-white my-3 text-sm">
               <Link href="/contact">Kontakt</Link>
             </li>

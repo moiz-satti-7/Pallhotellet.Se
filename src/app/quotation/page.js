@@ -1,81 +1,192 @@
 "use client";
-import React, { useState, useRef } from "react";
+import React, { useState } from "react";
 import { AiOutlineMail } from "react-icons/ai";
 import { PiPhoneCallThin } from "react-icons/pi";
 import { CiLocationOn } from "react-icons/ci";
-import dynamic from "next/dynamic";
 import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css"; // Importing required styles for DatePicker
-import { FaCalendarAlt } from "react-icons/fa"; // Optional: Icon for calendar
+import "react-datepicker/dist/react-datepicker.css";
+import { FaCalendarAlt } from "react-icons/fa";
+import { IoArrowForward } from "react-icons/io5";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-// Dynamically import MapComponent with SSR disabled
-// const MapComponent = dynamic(() => import("../components/MapComponent"), {
-//   ssr: false,
-// });
 
 const QuoteForm = () => {
-  const [checkedSections, setCheckedSections] = useState({
-    kallager: false,
-    varmlager: false,
-    utomhusforvaring: false,
-    forrad: false,
-    gaffeltruck: false,
-    container: false,
-    ompackning: false,
-    handtruck: false,
-    gaffeltruck2: false,
-    travers: false,
-    containerhandling: false,
-    skrymmande: false,
-    helpDocumentation: false,
-    orderManagement: false,
-    upphandling: false,
-    kringfunktioner: false,
-    completeSolution: false,
-  });
+  // Initial form state
+  const initialFormState = {
+    // Main fields
+    name: "",
+    aftername: "",
+    email: "",
+    telephone: "",
+    foretag: "",
+    orgnr: "",
 
-  const handleCheckboxChange = (section) => {
-    setCheckedSections((prevState) => ({
-      ...prevState,
-      [section]: !prevState[section],
-    }));
+    // Checkbox: kallager
+    kallager: {
+      isChecked: false,
+      antalpallplaster: "", // Number of pallet places
+      snitt: "", // Average
+      antalKragar: "", // Number of collars
+      franOchMed: null, // From date
+      tillOchMed: null, // To date
+    },
+
+    // Checkbox: varmlager
+    varmlager: {
+      isChecked: false,
+      antalpallplaster: "",
+      snitt: "",
+      antalKragar: "",
+      franOchMed: null,
+      tillOchMed: null,
+    },
+
+    // Checkbox: utomhusforvaring
+    utomhusforvaring: {
+      isChecked: false,
+      ytaIM2: "", // Area in m²
+      hojd: "", // Height
+      bredd: "", // Width
+      langd: "", // Length
+      franOchMed: null,
+      tillOchMed: null,
+      typAvGods: "", // Type of goods (dropdown selection)
+    },
+
+    // Checkbox: hyra av forrad
+    hyraAvForrad: {
+      isChecked: false,
+      ytanIM2: "", // Area in m²
+      franOchMed: null,
+      tillOchMed: null,
+    },
+
+    // Services without subfields
+    services: {
+      // 3.1 Lossning, ompackning
+      lossningLastbilGaffeltruckOnskas: false,
+      lossningLastningContainerOnskas: false,
+      ompackningPlockOnskas: false,
+      containerhanteringPacketering: false,
+      hanteringSkrymmandeGods: false,
+
+      // 3.2 Redskap och maskiner
+      handtruckOnskas: false,
+      gaffeltruckOnskas: false,
+      traversOnskas: false,
+
+      // Kringtjänster
+      hjalpDokumentationOnskas: false,
+      hjalpOrderhanteringOnskas: false,
+      behoverHjalpKringtjansterMerInfo: false,
+      behoverForslagKomplett3plLosning: false,
+    },
   };
 
-  // Calendar Input Settings
+  const [formState, setFormState] = useState(initialFormState);
 
-  const [startDate, setStartDate] = useState(null); // For "From" date
-  const [endDate, setEndDate] = useState(null); // For "Till" (Until) date
-  const datePickerStartRef = useRef(null);
-  const datePickerEndRef = useRef(null);
+  // Loading state to manage submission status
+  const [loading, setLoading] = useState(false);
 
-  const handleStartDateClick = () => {
-    if (datePickerStartRef.current) {
-      datePickerStartRef.current.setOpen(true); // Open the start date picker
+  const handleCheckboxChange = (section, field) => {
+    if (field) {
+      // For services and nested fields
+      setFormState((prevState) => ({
+        ...prevState,
+        [section]: {
+          ...prevState[section],
+          [field]: !prevState[section][field],
+        },
+      }));
+    } else {
+      // For main checkboxes
+      setFormState((prevState) => ({
+        ...prevState,
+        [section]: {
+          ...prevState[section],
+          isChecked: !prevState[section].isChecked,
+        },
+      }));
     }
   };
 
-  const handleEndDateClick = () => {
-    if (datePickerEndRef.current) {
-      datePickerEndRef.current.setOpen(true); // Open the end date picker
+  const handleInputChange = (section, field, value) => {
+    if (field) {
+      setFormState((prevState) => ({
+        ...prevState,
+        [section]: {
+          ...prevState[section],
+          [field]: value,
+        },
+      }));
+    } else {
+      setFormState((prevState) => ({
+        ...prevState,
+        [section]: value,
+      }));
     }
   };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    setLoading(true); // Disable the submit button
+
+    try {
+      const response = await fetch("/api/quotation", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formState),
+      });
+
+      if (response.ok) {
+        // Show success toast
+        toast.success("Tack för ditt mail, vi kontaktar dig inom kort!");
+
+        // Clear the form by resetting the form state to initial values
+        setFormState(initialFormState);
+      } else {
+        // Show error toast with response status text
+        toast.error("Fel: " + response.statusText);
+      }
+    } catch (error) {
+      console.error("Error submitting form:", error);
+
+      // Show error toast
+      toast.error("Ett fel inträffade. Försök igen.");
+    } finally {
+      setLoading(false); // Re-enable the submit button
+    }
+  };
+
+
+
   return (
     <>
+ <ToastContainer
+        position="top-center"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
+
       <section className="flex items-center justify-center text-white bg-center bg-cover bg-[url('/imgs/contactus.png')] md:py-56 pt-32 pb-20">
-        <div className=" mx-auto flex justify-center items-center h-full">
+        <div className="mx-auto flex justify-center items-center h-full">
           <h1 className="text-white text-3xl md:text-5xl font-bold">
             Offertförfrågan
           </h1>
         </div>
       </section>
 
-      {/* <section className="h-[500px]">
-        <MapComponent />
-      </section> */}
-
       <section className="py-12 px-4 md:px-9 text-black w-full flex flex-col lg:flex-row gap-12 items-start justify-center">
         <div className="w-full lg:w-4/12 px-8">
-          <h2 className="text-xl font-bold mb-1">Kontakt</h2>
           <h3 className="text-lg font-semibold mb-4">Pallhotellet</h3>
           <div className="space-y-4 text-lg">
             <div className="flex items-center">
@@ -89,53 +200,78 @@ const QuoteForm = () => {
             <div className="flex items-center">
               <AiOutlineMail size={20} />
               <p className="ml-4">order@pallhotellet.se</p>
-            </div> 
+            </div>
           </div>
         </div>
-        <div className="w-full lg:w-10/12 px-8 ">
+        <div className="w-full lg:w-10/12 px-8">
           <h2 className="text-3xl font-bold mb-8">Offertförfrågan</h2>
-          <form className="flex flex-col gap-6">
-            {/* Contact Form */}
+          <form onSubmit={handleSubmit} className="flex flex-col gap-6">
             {/* 1. Företagsuppgifter */}
             <div>
-              <h2 className="text-2xl font-bold mb-6">
-                {" "}
-                1. Företagsuppgifter{" "}
-              </h2>
+              <h2 className="text-2xl font-bold mb-6">1. Företagsuppgifter</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <input
+                  required
                   type="text"
-                  name="firstName"
+                  name="name"
+                  value={formState.name}
+                  onChange={(e) =>
+                    handleInputChange("name", null, e.target.value)
+                  }
                   placeholder="Namn"
                   className="focus:outline-orange-500 p-3 border border-gray-300 rounded-md"
                 />
                 <input
+                  required
                   type="text"
-                  name="lastName"
+                  name="aftername"
+                  value={formState.aftername}
+                  onChange={(e) =>
+                    handleInputChange("aftername", null, e.target.value)
+                  }
                   placeholder="Efternamn"
                   className="focus:outline-orange-500 p-3 border border-gray-300 rounded-md"
                 />
                 <input
+                  required
                   type="email"
                   name="email"
+                  value={formState.email}
+                  onChange={(e) =>
+                    handleInputChange("email", null, e.target.value)
+                  }
                   placeholder="Email"
                   className="focus:outline-orange-500 p-3 border border-gray-300 rounded-md"
                 />
                 <input
-                  name="phone"
+                  required
+                  name="telephone"
+                  value={formState.telephone}
+                  onChange={(e) =>
+                    handleInputChange("telephone", null, e.target.value)
+                  }
                   placeholder="Telefon"
                   className="p-3 border border-gray-300 rounded-md focus:outline-orange-500"
                 />
-
                 <input
+                  required
                   type="text"
-                  name="company"
+                  name="foretag"
+                  value={formState.foretag}
+                  onChange={(e) =>
+                    handleInputChange("foretag", null, e.target.value)
+                  }
                   placeholder="Företag"
                   className="focus:outline-orange-500 p-3 border border-gray-300 rounded-md"
                 />
                 <input
+                  required
                   type="text"
-                  name="orgNr"
+                  name="orgnr"
+                  value={formState.orgnr}
+                  onChange={(e) =>
+                    handleInputChange("orgnr", null, e.target.value)
+                  }
                   placeholder="OrgNr"
                   className="focus:outline-orange-500 p-3 border border-gray-300 rounded-md"
                 />
@@ -154,7 +290,7 @@ const QuoteForm = () => {
                     <input
                       type="checkbox"
                       className="mr-2 size-6"
-                      checked={checkedSections.kallager}
+                      checked={formState.kallager.isChecked}
                       onChange={() => handleCheckboxChange("kallager")}
                     />
                   </div>
@@ -163,57 +299,83 @@ const QuoteForm = () => {
                   </div>
                 </label>
 
-                {checkedSections.kallager && (
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <input
-                      type="number"
-                      name="pallplatserKallager"
-                      placeholder="Antal pallplatser"
-                      className="p-3 border border-gray-300 rounded-md focus:outline-orange-500"
-                    />
-                    <input
-                      type="text"
-                      name="Pallvikt/snitt"
-                      placeholder="Pallvikt/snitt"
-                      className="p-3 border border-gray-300 rounded-md focus:outline-orange-500"
-                    />
-                    <input
-                      type="text"
-                      name="Antalkragar"
-                      placeholder="Antal kragar"
-                      className="p-3 border border-gray-300 rounded-md focus:outline-orange-500"
-                    />
-
-                    <div
-                      className="relative w-full"
-                      onClick={handleStartDateClick}
-                    >
-                      <div className="flex items-center justify-between w-full py-3 pl-3 pr-10 border border-gray-300 rounded-md shadow-sm cursor-pointer focus-within:border-orange-500 sm:text-sm">
-                        <DatePicker
-                          ref={datePickerStartRef}
-                          selected={startDate}
-                          onChange={(date) => setStartDate(date)}
-                          placeholderText="Från och med"
-                          dateFormat="yyyy-MM-dd"
-                          className="focus:outline-none w-full bg-transparent pointer-events-none"
+                {formState.kallager.isChecked && (
+                  <div className="">
+                    <div className="flex md:justify-between flex-wrap md:flex-nowrap space-y-5 md:space-y-0 my-5 md:space-x-4 ">
+                      <input
+                        type="number"
+                        name="antalpallplaster"
+                        placeholder="Antal pallplatser"
+                        value={formState.kallager.antalpallplaster}
+                        onChange={(e) =>
+                          handleInputChange(
+                            "kallager",
+                            "antalpallplaster",
+                            e.target.value
+                          )
+                        }
+                        className="p-3 border border-gray-300 rounded-md focus:outline-orange-500 w-full  md:w-6/12"
+                      />
+                      <div className="md:w-6/12 md:space-x-5 flex flex-wrap md:flex-nowrap space-y-5 md:space-y-0 ">
+                        <input
+                          type="text"
+                          name="snitt"
+                          placeholder="Pallvikt/snitt"
+                          value={formState.kallager.snitt}
+                          onChange={(e) =>
+                            handleInputChange(
+                              "kallager",
+                              "snitt",
+                              e.target.value
+                            )
+                          }
+                          className="p-3 border border-gray-300 rounded-md focus:outline-orange-500 w-full  md:w-6/12"
                         />
-                        <FaCalendarAlt className="text-gray-400 pointer-events-none" />
+                        <input
+                          type="text"
+                          name="antalKragar"
+                          placeholder="Antal kragar"
+                          value={formState.kallager.antalKragar}
+                          onChange={(e) =>
+                            handleInputChange(
+                              "kallager",
+                              "antalKragar",
+                              e.target.value
+                            )
+                          }
+                          className="p-3 border border-gray-300 rounded-md focus:outline-orange-500 w-full  md:w-6/12"
+                        />
                       </div>
                     </div>
-                    <div
-                      className="relative w-full"
-                      onClick={handleEndDateClick}
-                    >
-                      <div className="flex items-center justify-between w-full py-3 pl-3 pr-10 border border-gray-300 rounded-md shadow-sm cursor-pointer focus-within:border-orange-500 sm:text-sm">
-                        <DatePicker
-                          ref={datePickerEndRef}
-                          selected={endDate}
-                          onChange={(date) => setEndDate(date)}
-                          placeholderText="Till och med"
-                          dateFormat="yyyy-MM-dd"
-                          className="focus:outline-none w-full bg-transparent pointer-events-none"
-                        />
-                        <FaCalendarAlt className="text-gray-400 pointer-events-none" />
+
+                    <div className="flex md:space-x-3 flex-wrap md:flex-nowrap space-y-5 md:space-y-0">
+                      <div className="relative w-full">
+                        <div className="flex items-center justify-between w-full py-3 pl-3 pr-10 border border-gray-300 rounded-md shadow-sm focus-within:border-orange-500 ">
+                          <DatePicker
+                            selected={formState.kallager.franOchMed}
+                            onChange={(date) =>
+                              handleInputChange("kallager", "franOchMed", date)
+                            }
+                            placeholderText="Från och med"
+                            dateFormat="yyyy-MM-dd"
+                            className="focus:outline-none w-full bg-transparent"
+                          />
+                          <FaCalendarAlt className="text-gray-400" />
+                        </div>
+                      </div>
+                      <div className="relative w-full">
+                        <div className="flex items-center justify-between w-full py-3 pl-3 pr-10 border border-gray-300 rounded-md shadow-sm focus-within:border-orange-500 ">
+                          <DatePicker
+                            selected={formState.kallager.tillOchMed}
+                            onChange={(date) =>
+                              handleInputChange("kallager", "tillOchMed", date)
+                            }
+                            placeholderText="Till och med"
+                            dateFormat="yyyy-MM-dd"
+                            className="focus:outline-none w-full bg-transparent"
+                          />
+                          <FaCalendarAlt className="text-gray-400" />
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -229,66 +391,93 @@ const QuoteForm = () => {
                   <div className="w-2/12 md:w-auto md:me-3">
                     <input
                       type="checkbox"
-                      checked={checkedSections.varmlager}
+                      checked={formState.varmlager.isChecked}
                       onChange={() => handleCheckboxChange("varmlager")}
                       className="mr-2 size-6"
                     />
                   </div>
-                <div className="w-10/12">
-                  Vill hyra pallplatser INOMHUS I UPPVÄRMT LAGER
-                </div>
+                  <div className="w-10/12">
+                    Vill hyra pallplatser INOMHUS I UPPVÄRMT LAGER
+                  </div>
                 </label>
 
-                {checkedSections.varmlager && (
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <input
-                      type="number"
-                      name="pallplatserVarmager"
-                      placeholder="Antal pallplatser"
-                      className="p-3 border border-gray-300 rounded-md focus:outline-orange-500"
-                    />
-                    <input
-                      type="text"
-                      name="Pallvikt/snitt"
-                      placeholder="Pallvikt/snitt"
-                      className="p-3 border border-gray-300 rounded-md focus:outline-orange-500"
-                    />
-                    <input
-                      type="text"
-                      name="Antalkragar"
-                      placeholder="Antal kragar"
-                      className="p-3 border border-gray-300 rounded-md focus:outline-orange-500"
-                    />
-                    <div
-                      className="relative w-full"
-                      onClick={handleStartDateClick}
-                    >
-                      <div className="flex items-center justify-between w-full py-3 pl-3 pr-10 border border-gray-300 rounded-md shadow-sm cursor-pointer focus-within:border-orange-500 sm:text-sm">
-                        <DatePicker
-                          ref={datePickerStartRef}
-                          selected={startDate}
-                          onChange={(date) => setStartDate(date)}
-                          placeholderText="Från och med"
-                          dateFormat="yyyy-MM-dd"
-                          className="focus:outline-none w-full bg-transparent pointer-events-none"
+                {formState.varmlager.isChecked && (
+                  <div className="">
+                    <div className="flex md:justify-between flex-wrap md:flex-nowrap space-y-5 md:space-y-0 my-5 md:space-x-4">
+                      <input
+                        type="number"
+                        name="antalpallplaster"
+                        placeholder="Antal pallplatser"
+                        value={formState.varmlager.antalpallplaster}
+                        onChange={(e) =>
+                          handleInputChange(
+                            "varmlager",
+                            "antalpallplaster",
+                            e.target.value
+                          )
+                        }
+                        className="p-3 border border-gray-300 rounded-md focus:outline-orange-500 w-full  md:w-6/12"
+                      />
+                      <div className="md:w-6/12 md:space-x-5 flex-wrap md:flex-nowrap space-y-5 md:space-y-0 flex">
+                        <input
+                          type="text"
+                          name="snitt"
+                          placeholder="Pallvikt/snitt"
+                          value={formState.varmlager.snitt}
+                          onChange={(e) =>
+                            handleInputChange(
+                              "varmlager",
+                              "snitt",
+                              e.target.value
+                            )
+                          }
+                          className="p-3 border border-gray-300 rounded-md focus:outline-orange-500 w-full  md:w-6/12"
                         />
-                        <FaCalendarAlt className="text-gray-400 pointer-events-none" />
+                        <input
+                          type="text"
+                          name="antalKragar"
+                          placeholder="Antal kragar"
+                          value={formState.varmlager.antalKragar}
+                          onChange={(e) =>
+                            handleInputChange(
+                              "varmlager",
+                              "antalKragar",
+                              e.target.value
+                            )
+                          }
+                          className="p-3 border border-gray-300 rounded-md focus:outline-orange-500 w-full  md:w-6/12"
+                        />
                       </div>
                     </div>
-                    <div
-                      className="relative w-full"
-                      onClick={handleEndDateClick}
-                    >
-                      <div className="flex items-center justify-between w-full py-3 pl-3 pr-10 border border-gray-300 rounded-md shadow-sm cursor-pointer focus-within:border-orange-500 sm:text-sm">
-                        <DatePicker
-                          ref={datePickerEndRef}
-                          selected={endDate}
-                          onChange={(date) => setEndDate(date)}
-                          placeholderText="Till och med"
-                          dateFormat="yyyy-MM-dd"
-                          className="focus:outline-none w-full bg-transparent pointer-events-none"
-                        />
-                        <FaCalendarAlt className="text-gray-400 pointer-events-none" />
+
+                    <div className="flex md:space-x-3 flex-wrap md:flex-nowrap space-y-5 md:space-y-0 ">
+                      <div className="relative w-full">
+                        <div className="flex items-center justify-between w-full py-3 pl-3 pr-10 border border-gray-300 rounded-md shadow-sm focus-within:border-orange-500 ">
+                          <DatePicker
+                            selected={formState.varmlager.franOchMed}
+                            onChange={(date) =>
+                              handleInputChange("varmlager", "franOchMed", date)
+                            }
+                            placeholderText="Från och med"
+                            dateFormat="yyyy-MM-dd"
+                            className="focus:outline-none w-full bg-transparent"
+                          />
+                          <FaCalendarAlt className="text-gray-400" />
+                        </div>
+                      </div>
+                      <div className="relative w-full">
+                        <div className="flex items-center justify-between w-full py-3 pl-3 pr-10 border border-gray-300 rounded-md shadow-sm focus-within:border-orange-500 ">
+                          <DatePicker
+                            selected={formState.varmlager.tillOchMed}
+                            onChange={(date) =>
+                              handleInputChange("varmlager", "tillOchMed", date)
+                            }
+                            placeholderText="Till och med"
+                            dateFormat="yyyy-MM-dd"
+                            className="focus:outline-none w-full bg-transparent"
+                          />
+                          <FaCalendarAlt className="text-gray-400" />
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -304,7 +493,7 @@ const QuoteForm = () => {
                   <input
                     type="checkbox"
                     id="utomhusforvaring"
-                    checked={checkedSections.utomhusforvaring}
+                    checked={formState.utomhusforvaring.isChecked}
                     onChange={() => handleCheckboxChange("utomhusforvaring")}
                     className="mr-2 size-6"
                   />
@@ -316,65 +505,111 @@ const QuoteForm = () => {
                 </div>
               </div>
 
-              {checkedSections.utomhusforvaring && (
+              {formState.utomhusforvaring.isChecked && (
                 <>
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
                     <input
                       type="text"
                       placeholder="Yta i m2"
+                      value={formState.utomhusforvaring.ytaIM2}
+                      onChange={(e) =>
+                        handleInputChange(
+                          "utomhusforvaring",
+                          "ytaIM2",
+                          e.target.value
+                        )
+                      }
                       className="p-2 border rounded focus:outline-orange-500"
                     />
                     <input
                       type="text"
                       placeholder="Höjd"
+                      value={formState.utomhusforvaring.hojd}
+                      onChange={(e) =>
+                        handleInputChange(
+                          "utomhusforvaring",
+                          "hojd",
+                          e.target.value
+                        )
+                      }
                       className="p-2 border rounded focus:outline-orange-500"
                     />
                     <input
                       type="text"
                       placeholder="Bredd"
+                      value={formState.utomhusforvaring.bredd}
+                      onChange={(e) =>
+                        handleInputChange(
+                          "utomhusforvaring",
+                          "bredd",
+                          e.target.value
+                        )
+                      }
                       className="p-2 border rounded focus:outline-orange-500"
                     />
                     <input
                       type="text"
                       placeholder="Längd"
+                      value={formState.utomhusforvaring.langd}
+                      onChange={(e) =>
+                        handleInputChange(
+                          "utomhusforvaring",
+                          "langd",
+                          e.target.value
+                        )
+                      }
                       className="p-2 border rounded focus:outline-orange-500"
                     />
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-                    <div
-                      className="relative w-full"
-                      onClick={handleStartDateClick}
-                    >
-                      <div className="flex items-center justify-between w-full py-3 pl-3 pr-10 border border-gray-300 rounded-md shadow-sm cursor-pointer focus-within:border-orange-500 sm:text-sm">
+                    <div className="relative w-full">
+                      <div className="flex items-center justify-between w-full py-3 pl-3 pr-10 border border-gray-300 rounded-md shadow-sm focus-within:border-orange-500 ">
                         <DatePicker
-                          ref={datePickerStartRef}
-                          selected={startDate}
-                          onChange={(date) => setStartDate(date)}
+                          selected={formState.utomhusforvaring.franOchMed}
+                          onChange={(date) =>
+                            handleInputChange(
+                              "utomhusforvaring",
+                              "franOchMed",
+                              date
+                            )
+                          }
                           placeholderText="Från och med"
                           dateFormat="yyyy-MM-dd"
-                          className="focus:outline-none w-full bg-transparent pointer-events-none"
+                          className="focus:outline-none w-full bg-transparent"
                         />
-                        <FaCalendarAlt className="text-gray-400 pointer-events-none" />
+                        <FaCalendarAlt className="text-gray-400" />
                       </div>
                     </div>
-                    <div
-                      className="relative w-full"
-                      onClick={handleEndDateClick}
-                    >
-                      <div className="flex items-center justify-between w-full py-3 pl-3 pr-10 border border-gray-300 rounded-md shadow-sm cursor-pointer focus-within:border-orange-500 sm:text-sm">
+                    <div className="relative w-full">
+                      <div className="flex items-center justify-between w-full py-3 pl-3 pr-10 border border-gray-300 rounded-md shadow-sm focus-within:border-orange-500 ">
                         <DatePicker
-                          ref={datePickerEndRef}
-                          selected={endDate}
-                          onChange={(date) => setEndDate(date)}
+                          selected={formState.utomhusforvaring.tillOchMed}
+                          onChange={(date) =>
+                            handleInputChange(
+                              "utomhusforvaring",
+                              "tillOchMed",
+                              date
+                            )
+                          }
                           placeholderText="Till och med"
                           dateFormat="yyyy-MM-dd"
-                          className="focus:outline-none w-full bg-transparent pointer-events-none"
+                          className="focus:outline-none w-full bg-transparent"
                         />
-                        <FaCalendarAlt className="text-gray-400 pointer-events-none" />
+                        <FaCalendarAlt className="text-gray-400" />
                       </div>
                     </div>
-                    <select className="p-3 border border-gray-300 rounded-md focus:outline-orange-500">
+                    <select
+                      value={formState.utomhusforvaring.typAvGods}
+                      onChange={(e) =>
+                        handleInputChange(
+                          "utomhusforvaring",
+                          "typAvGods",
+                          e.target.value
+                        )
+                      }
+                      className="p-3 border border-gray-300 rounded-md focus:outline-orange-500"
+                    >
                       <option value="">Typ av gods</option>
                       <option value="skrymmande">Skrymmande</option>
                       <option value="ej-skrymmande">Ej skrymmande</option>
@@ -382,7 +617,6 @@ const QuoteForm = () => {
                   </div>
                 </>
               )}
-
               <div className="border-t-2 border-dotted border-[#A0ABBB] my-6"></div>
 
               {/* Hyra av förråd */}
@@ -391,52 +625,66 @@ const QuoteForm = () => {
                 <div className="w-2/12 md:w-auto md:me-3">
                   <input
                     type="checkbox"
-                    checked={checkedSections.forrad}
-                    onChange={() => handleCheckboxChange("forrad")}
-                    id="forrad"
+                    checked={formState.hyraAvForrad.isChecked}
+                    onChange={() => handleCheckboxChange("hyraAvForrad")}
+                    id="hyraAvForrad"
                     className="size-6"
                   />
                 </div>
                 <div className="w-10/12">
-                  <label htmlFor="forrad">Vill hyra INOMHUSFÖRRÅD</label>
+                  <label htmlFor="hyraAvForrad">Vill hyra INOMHUSFÖRRÅD</label>
                 </div>
               </div>
 
-              {checkedSections.forrad && (
+              {formState.hyraAvForrad.isChecked && (
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <input
                     type="text"
                     placeholder="Ytan i m2"
+                    value={formState.hyraAvForrad.ytanIM2}
+                    onChange={(e) =>
+                      handleInputChange(
+                        "hyraAvForrad",
+                        "ytanIM2",
+                        e.target.value
+                      )
+                    }
                     className="p-2 border rounded focus:outline-orange-500"
                   />
-
-                  <div
-                    className="relative w-full"
-                    onClick={handleStartDateClick}
-                  >
-                    <div className="flex items-center justify-between w-full py-3 pl-3 pr-10 border border-gray-300 rounded-md shadow-sm cursor-pointer focus-within:border-orange-500 sm:text-sm">
+                  <div className="relative w-full">
+                    <div className="flex items-center justify-between w-full py-3 pl-3 pr-10 border border-gray-300 rounded-md shadow-sm focus-within:border-orange-500 ">
                       <DatePicker
-                        ref={datePickerStartRef}
-                        selected={startDate}
-                        onChange={(date) => setStartDate(date)}
+                        selected={formState.hyraAvForrad.franOchMed}
+                        onChange={(date) =>
+                          handleInputChange(
+                            "hyraAvForrad",
+                            "franOchMed",
+                            date
+                          )
+                        }
                         placeholderText="Från och med"
                         dateFormat="yyyy-MM-dd"
-                        className="focus:outline-none w-full bg-transparent pointer-events-none"
+                        className="focus:outline-none w-full bg-transparent"
                       />
-                      <FaCalendarAlt className="text-gray-400 pointer-events-none" />
+                      <FaCalendarAlt className="text-gray-400" />
                     </div>
                   </div>
-                  <div className="relative w-full" onClick={handleEndDateClick}>
-                    <div className="flex items-center justify-between w-full py-3 pl-3 pr-10 border border-gray-300 rounded-md shadow-sm cursor-pointer focus-within:border-orange-500 sm:text-sm">
+                  <div className="relative w-full">
+                    <div className="flex items-center justify-between w-full py-3 pl-3 pr-10 border border-gray-300 rounded-md shadow-sm focus-within:border-orange-500 ">
                       <DatePicker
-                        ref={datePickerEndRef}
-                        selected={endDate}
-                        onChange={(date) => setEndDate(date)}
+                        selected={formState.hyraAvForrad.tillOchMed}
+                        onChange={(date) =>
+                          handleInputChange(
+                            "hyraAvForrad",
+                            "tillOchMed",
+                            date
+                          )
+                        }
                         placeholderText="Till och med"
                         dateFormat="yyyy-MM-dd"
-                        className="focus:outline-none w-full bg-transparent pointer-events-none"
+                        className="focus:outline-none w-full bg-transparent"
                       />
-                      <FaCalendarAlt className="text-gray-400 pointer-events-none" />
+                      <FaCalendarAlt className="text-gray-400" />
                     </div>
                   </div>
                 </div>
@@ -446,10 +694,7 @@ const QuoteForm = () => {
             <div className="border-t-2 border-[#A0ABBB] mb-6"></div>
 
             {/* Section 3 - Inlastning / utlastning */}
-
-            <h2 className="text-2xl font-semibold">
-              3. Inlastning / utlastning
-            </h2>
+            <h2 className="text-2xl font-semibold">3. Inlastning / utlastning</h2>
 
             {/* Lossning, ompackning */}
             <h3 className="font-semibold">3.1 Lossning, ompackning</h3>
@@ -458,8 +703,15 @@ const QuoteForm = () => {
                 <div className="w-2/12 md:w-auto md:me-3">
                   <input
                     type="checkbox"
-                    // checked={checkedSections.gaffeltruck}
-                    onChange={() => handleCheckboxChange("gaffeltruck")}
+                    checked={
+                      formState.services.lossningLastbilGaffeltruckOnskas
+                    }
+                    onChange={() =>
+                      handleCheckboxChange(
+                        "services",
+                        "lossningLastbilGaffeltruckOnskas"
+                      )
+                    }
                     id="gaffeltruck"
                     className="size-6"
                   />
@@ -475,8 +727,15 @@ const QuoteForm = () => {
                 <div className="w-2/12 md:w-auto md:me-3">
                   <input
                     type="checkbox"
-                    // checked={checkedSections.container}
-                    onChange={() => handleCheckboxChange("container")}
+                    checked={
+                      formState.services.lossningLastningContainerOnskas
+                    }
+                    onChange={() =>
+                      handleCheckboxChange(
+                        "services",
+                        "lossningLastningContainerOnskas"
+                      )
+                    }
                     id="container"
                     className="mr-2 size-6"
                   />
@@ -492,16 +751,19 @@ const QuoteForm = () => {
                 <div className="w-2/12 md:w-auto md:me-3">
                   <input
                     type="checkbox"
-                    // checked={checkedSections.ompackning}
-                    onChange={() => handleCheckboxChange("ompackning")}
+                    checked={formState.services.ompackningPlockOnskas}
+                    onChange={() =>
+                      handleCheckboxChange(
+                        "services",
+                        "ompackningPlockOnskas"
+                      )
+                    }
                     id="ompackning"
                     className="mr-2 size-6"
                   />
                 </div>
                 <div className="w-10/12">
-                  <label htmlFor="ompackning">
-                    Ompackning och plock önskas
-                  </label>
+                  <label htmlFor="ompackning">Ompackning och plock önskas</label>
                 </div>
               </div>
             </div>
@@ -509,19 +771,25 @@ const QuoteForm = () => {
             <div className="border-t-2 border-dotted border-[#A0ABBB] my-6"></div>
 
             {/* Additional Checkboxes */}
-
             <div className="flex md:items-center">
               <div className="w-2/12 md:w-auto md:me-3">
                 <input
                   type="checkbox"
-                  id="containerhandling"
-                  checked={checkedSections.containerhandling}
-                  onChange={() => handleCheckboxChange("containerhandling")}
+                  id="containerhanteringPacketering"
+                  checked={
+                    formState.services.containerhanteringPacketering
+                  }
+                  onChange={() =>
+                    handleCheckboxChange(
+                      "services",
+                      "containerhanteringPacketering"
+                    )
+                  }
                   className="mr-2 size-6"
                 />
               </div>
               <div className="w-10/12">
-                <label htmlFor="containerhandling">
+                <label htmlFor="containerhanteringPacketering">
                   Containerhantering /packetering
                 </label>
               </div>
@@ -533,14 +801,21 @@ const QuoteForm = () => {
               <div className="w-2/12 md:w-auto md:me-3">
                 <input
                   type="checkbox"
-                  id="skrymmande"
-                  // checked={checkedSections.skrymmande}
-                  onChange={() => handleCheckboxChange("skrymmande")}
+                  id="hanteringSkrymmandeGods"
+                  checked={formState.services.hanteringSkrymmandeGods}
+                  onChange={() =>
+                    handleCheckboxChange(
+                      "services",
+                      "hanteringSkrymmandeGods"
+                    )
+                  }
                   className="mr-2 size-6"
                 />
               </div>
               <div className="w-10/12">
-                <label htmlFor="skrymmande">Hantering av skrymmande gods</label>
+                <label htmlFor="hanteringSkrymmandeGods">
+                  Hantering av skrymmande gods
+                </label>
               </div>
             </div>
 
@@ -556,8 +831,10 @@ const QuoteForm = () => {
                 <div className="w-2/12 md:w-auto md:me-3">
                   <input
                     type="checkbox"
-                    // checked={checkedSections.handtruck}
-                    onChange={() => handleCheckboxChange("handtruck")}
+                    checked={formState.services.handtruckOnskas}
+                    onChange={() =>
+                      handleCheckboxChange("services", "handtruckOnskas")
+                    }
                     id="handtruck"
                     className="mr-2 size-6"
                   />
@@ -565,24 +842,16 @@ const QuoteForm = () => {
                 <div className="w-10/12">
                   <label htmlFor="handtruck">Handtruck önskas</label>
                 </div>
-
-                <div className="md:w-1/2 flex items-center">
-                  {/* {checkedSections.handtruck && (
-                    <input
-                      type="text"
-                      placeholder="Antal timmar"
-                      className="p-2 border focus:outline-orange-500 rounded mt-5 md:mt-0"
-                    />
-                  )} */}
-                </div>
               </div>
 
               <div className="flex md:items-center">
                 <div className="w-2/12 md:w-auto md:me-3">
                   <input
                     type="checkbox"
-                    // checked={checkedSections.gaffeltruck2}
-                    onChange={() => handleCheckboxChange("gaffeltruck2")}
+                    checked={formState.services.gaffeltruckOnskas}
+                    onChange={() =>
+                      handleCheckboxChange("services", "gaffeltruckOnskas")
+                    }
                     id="gaffeltruck2"
                     className="mr-2 size-6"
                   />
@@ -596,8 +865,10 @@ const QuoteForm = () => {
                 <div className="w-2/12 md:w-auto md:me-3">
                   <input
                     type="checkbox"
-                    // checked={checkedSections.travers}
-                    onChange={() => handleCheckboxChange("travers")}
+                    checked={formState.services.traversOnskas}
+                    onChange={() =>
+                      handleCheckboxChange("services", "traversOnskas")
+                    }
                     id="travers"
                     className="mr-2 size-6"
                   />
@@ -617,26 +888,6 @@ const QuoteForm = () => {
                   4. Kringtjänster
                 </h2>
 
-                {/* Help with Documentation */}
-                {/* <div className="my-10 flex flex-wrap space-y-5">
-                  <label className="flex items-center md:w-1/2">
-                    <input
-                      type="checkbox"
-                      className="size-6 me-2"
-                      checked={checkedSections.helpDocumentation}
-                      onChange={() => handleCheckboxChange("helpDocumentation")}
-                    />
-                    <span>Hjälp med dokumentation föradrar</span>
-                  </label>
-                  {checkedSections.helpDocumentation && (
-                    <input
-                      type="text"
-                      placeholder="Antal timmar"
-                      className="mt-2 p-2 border rounded focus:border-orange-500 md:w-1/2"
-                    />
-                  )}
-                </div> */}
-
                 <div className="border-t-2 border-dotted border-[#A0ABBB] my-6"></div>
 
                 {/* Order Management */}
@@ -646,21 +897,21 @@ const QuoteForm = () => {
                       <input
                         type="checkbox"
                         className="size-6 me-2"
-                        // checked={checkedSections.orderManagement}
-                        onChange={() => handleCheckboxChange("orderManagement")}
+                        checked={
+                          formState.services.hjalpDokumentationOnskas
+                        }
+                        onChange={() =>
+                          handleCheckboxChange(
+                            "services",
+                            "hjalpDokumentationOnskas"
+                          )
+                        }
                       />
                     </div>
                     <div className="w-10/12">
                       Hjälp med dokumentation önskas
                     </div>
                   </label>
-                  {/* {checkedSections.orderManagement && (
-                    <input
-                      type="text"
-                      placeholder="Antal timmar"
-                      className="mt-2 p-2 border rounded focus:border-orange-500 md:w-1/2"
-                    />
-                  )} */}
                 </div>
 
                 <div className="border-t-2 border-dotted border-[#A0ABBB] my-6"></div>
@@ -671,8 +922,15 @@ const QuoteForm = () => {
                     <div className="w-2/12 md:w-auto md:me-3">
                       <input
                         type="checkbox"
-                        // checked={checkedSections.upphandling}
-                        onChange={() => handleCheckboxChange("upphandling")}
+                        checked={
+                          formState.services.hjalpOrderhanteringOnskas
+                        }
+                        onChange={() =>
+                          handleCheckboxChange(
+                            "services",
+                            "hjalpOrderhanteringOnskas"
+                          )
+                        }
                         className="size-6"
                       />
                     </div>
@@ -680,20 +938,6 @@ const QuoteForm = () => {
                       Hjälp med orderhantering önskas
                     </div>
                   </label>
-                  {/* {checkedSections.upphandling && (
-                    <div className="flex flex-wrap my-7 gap-5">
-                      <input
-                        type="text"
-                        placeholder="Upphandlingsprocess"
-                        className="p-2 border border-gray-300 rounded md:w-1/2 focus:ring-orange-500 focus:border-orange-500"
-                      />
-                      <input
-                        type="text"
-                        placeholder="Leveransmetod"
-                        className="p-2 border border-gray-300 rounded md:w-1/2 focus:ring-orange-500 focus:border-orange-500"
-                      />
-                    </div>
-                  )} */}
                 </div>
 
                 <div className="border-t-2 border-dotted border-[#A0ABBB] my-6"></div>
@@ -705,13 +949,20 @@ const QuoteForm = () => {
                       <input
                         type="checkbox"
                         className="me-2 size-6"
-                        checked={checkedSections.kringfunktioner}
-                        onChange={() => handleCheckboxChange("kringfunktioner")}
+                        checked={
+                          formState.services.behoverHjalpKringtjansterMerInfo
+                        }
+                        onChange={() =>
+                          handleCheckboxChange(
+                            "services",
+                            "behoverHjalpKringtjansterMerInfo"
+                          )
+                        }
                       />
                     </div>
                     <div className="w-10/12">
                       Behöver hjälp med andra kringtjänster, såsom montering,
-                      underhåll etc. Vi önskar mer info.
+                      underhåll etc. Vi önskar mer info.
                     </div>
                   </label>
                 </div>
@@ -725,27 +976,38 @@ const QuoteForm = () => {
                       <input
                         type="checkbox"
                         className="me-2 size-6"
-                        checked={checkedSections.completeSolution}
+                        checked={
+                          formState.services.behoverForslagKomplett3plLosning
+                        }
                         onChange={() =>
-                          handleCheckboxChange("completeSolution")
+                          handleCheckboxChange(
+                            "services",
+                            "behoverForslagKomplett3plLosning"
+                          )
                         }
                       />
                     </div>
                     <div className="w-10/12">
                       Behöver förslag till en komplett 3pl lösning, önskar
-                      gärna mer info.
+                      gärna mer info.
                     </div>
                   </label>
                 </div>
 
                 {/* Submit Button */}
                 <div className="text-center">
-                  <button
-                    type="submit"
-                    className="bg-orange-500 px-5 text-white py-3 w-full rounded-lg hover:bg-orange-600"
-                  >
-                    Skicka
-                  </button>
+                <button
+          type="submit"
+          disabled={loading}
+          className={`my-3 flex items-center mx-auto md:mx-0 ${
+            loading ? "opacity-50 cursor-not-allowed" : "hover:text-[#ff6300]"
+          } text-white hover:bg-white bg-[#ff6300] border-[#ff6300] border-2 text-nowrap md:py-3 py-2 px-3 md:px-4 lg:px-8 rounded-md`}
+        >
+          {loading ? "Skickar..." : "Skicka"}
+          <span className="bg-white rounded-full border-[#ff6300] border-2 p-1 ms-3">
+            <IoArrowForward color="#ff6300" size={23} />
+          </span>
+        </button>
                 </div>
               </div>
             </div>
