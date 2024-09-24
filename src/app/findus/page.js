@@ -69,7 +69,8 @@ export default function Findus() {
           {/* Text */}
           <div className="w-full text-center md:text-start  md:w-1/2 mt-8 md:mt-0 md:pl-12">
             <h2 className="text-3xl font-bold">
-            Expertlösningar inom lagring, godshantering, dokumentation och vidare
+              Expertlösningar inom lagring, godshantering, dokumentation och
+              vidare
             </h2>
             <p className="mt-4 text-sm">
               På vårt företag är vi specialiserade på att tillhandahålla
@@ -84,7 +85,8 @@ export default function Findus() {
         <div className="absolute inset-0 bg-[#083740d8] "></div>
         <div className="relative z-10 container mx-auto text-center text-white py-16">
           <h2 className="text-4xl font-bold mb-4">
-            Safe, secure and complete peace of <br /> mind storage
+            Trygg, säker och fullständig frid <br />
+            sinneslagring
           </h2>
           <p className="max-w-2xl mx-auto mb-6">
             Malesuada lacinia ipsum elit suscipit imperdiet tellus turpis
@@ -96,7 +98,7 @@ export default function Findus() {
            px-8 rounded-lg shadow-md hover:bg-orange-600
             transition duration-300"
           >
-            Get Started
+            Kom igång
           </button>
         </div>
       </section>
